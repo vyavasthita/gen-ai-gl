@@ -1,27 +1,24 @@
 from pathlib import Path
 import whisper
-from .model_loader import ModelLoader
+from typing import Any
 
 DEFAULT_AUDIO_PATH = Path("./src/audo_to_text/sample_files/first.wav")
 DEFAULT_MODEL_NAME = "tiny"
 
 class AudioFileTranscriber:
-    """Transcriber for static audio files.
+    """Transcriber for static audio files using a provided Whisper model.
 
-    Handles end-to-end: file loading, spectrogram creation, language detection,
-    and decoding. Focused on batch/offline usage.
+    The model is supplied externally (e.g. by an application layer) to allow
+    reuse across multiple transcriptions, centralized device placement, and
+    future sharing with streaming pathways.
     """
 
-    def __init__(self, audio_path: Path = DEFAULT_AUDIO_PATH, model_name: str = DEFAULT_MODEL_NAME):
+    def __init__(self, audio_path: Path, model: Any):
         self.audio_path = audio_path
-        self.model_name = model_name
-        self._loader = ModelLoader(model_name)
-        self._model = None  # Lazy-loaded whisper model
+        self._model = model  # Preloaded whisper model instance
 
     @property
     def model(self):
-        if self._model is None:
-            self._model = self._loader.load()
         return self._model
 
     def load_and_prepare_audio(self):
