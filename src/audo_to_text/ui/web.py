@@ -58,10 +58,61 @@ class MicrophoneTranscribeUI:
 	def __init__(self):
 		if "speech_transcriber" not in st.session_state:
 			st.session_state["speech_transcriber"] = SpeechTranscriber(model_name="tiny")
+		# Reuse/upload model for single-shot mic transcription
+		if "whisper_model" not in st.session_state:
+			st.session_state["whisper_model"] = ModelLoader("tiny").load()
+
+	def audio_recorder(self):
+		"""Render microphone recorder component and return recorded clip (UploadedFile-like)."""
+		return st.audio_input("Record speech")
+
+	def save_clip(self, clip):
+		"""Persist recorded clip to a temp file for transcription."""
+		if not clip:
+			return None
+		# Attempt to derive suffix from MIME type (e.g., audio/wav)
+		suffix = ".wav"
+		if hasattr(clip, "type") and clip.type:
+			if "mpeg" in clip.type:
+				suffix = ".mp3"
+			elif "ogg" in clip.type:
+				suffix = ".ogg"
+		with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+			data = clip.read()
+			tmp.write(data)
+			return Path(tmp.name)
+
+	def transcribe_clip(self, path: Path):
+		"""Transcribe the saved microphone recording using existing whisper model."""
+		if not path:
+			return None, ""
+		model = st.session_state["whisper_model"]
+		transcriber = AudioFileTranscriber(audio_path=path, model=model)
+		lang, text = transcriber.transcribe()
+		return lang, text
+
+	def display_single_shot(self):
+		"""Single-shot recording UI: record then transcribe."""
+		clip = self.audio_recorder()
+		if clip:
+			col_rec, col_act = st.columns([1,1])
+			with col_act:
+				if st.button("Transcribe Recording", key="mic_transcribe_btn"):
+					path = self.save_clip(clip)
+					try:
+						lang, text = self.transcribe_clip(path)
+						st.success(f"Detected language: {lang if lang else 'unknown'}")
+						st.text_area("Microphone Transcription", value=text, height=180)
+					finally:
+						if path and path.exists():
+							path.unlink(missing_ok=True)
+		else:
+			st.info("Press 'Record speech' to capture audio.")
 
 	def display(self):
-		st.write("Microphone capture not yet implemented. Placeholder.")
-		st.caption("Future: integrate streamlit-webrtc for live transcription.")
+		st.subheader("Microphone Speech Recognition")
+		self.display_single_shot()
+		st.caption("Future: add streaming with partial transcripts via WebRTC.")
 
 
 def main():

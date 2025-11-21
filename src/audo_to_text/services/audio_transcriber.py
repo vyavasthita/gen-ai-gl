@@ -5,6 +5,7 @@ from typing import Any
 DEFAULT_AUDIO_PATH = Path("./src/audo_to_text/sample_files/first.wav")
 DEFAULT_MODEL_NAME = "tiny"
 
+
 class AudioFileTranscriber:
     """Transcriber for static audio files using a provided Whisper model.
 
