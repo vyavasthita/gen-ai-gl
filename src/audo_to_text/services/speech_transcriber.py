@@ -21,10 +21,12 @@ import numpy as np
 import whisper
 from .model_loader import ModelLoader
 
+
 # Placeholder constants (tweak later once real streaming is added)
 TARGET_RATE = 16000  # Whisper expected sample rate
 MIN_CHUNK_SECONDS = 3.0  # Minimum audio duration before attempting decode
 SILENCE_THRESHOLD = 0.01  # RMS threshold heuristic for silence
+
 
 @dataclass
 class AudioBuffer:
@@ -94,6 +96,7 @@ class SpeechTranscriber:
             x_old = np.linspace(0, duration, num=pcm.shape[0], endpoint=False)
             x_new = np.linspace(0, duration, num=target_len, endpoint=False)
             pcm = np.interp(x_new, x_old, pcm).astype(np.float32)
+            
         self._buffer.append(pcm)
 
     def has_sufficient_audio(self) -> bool:
@@ -110,8 +113,10 @@ class SpeechTranscriber:
         """
         if not self.has_sufficient_audio():
             return None
+        
         concat = self._buffer.to_array()
         mel = whisper.log_mel_spectrogram(concat).to(self.model.device)
+        
         # For partial decode, you could set no_speech_threshold lower or temperature variations.
         options = whisper.DecodingOptions()
         result = whisper.decode(self.model, mel, options)
@@ -129,13 +134,16 @@ class SpeechTranscriber:
             self._buffer.clear()
             self._last_transcript = None
             return final
+        
         return None
 
     def force_decode(self) -> str:
         """Force a decode on current buffer regardless of duration/silence."""
         concat = self._buffer.to_array()
+
         if concat.size == 0:
             return ""
+        
         mel = whisper.log_mel_spectrogram(concat).to(self.model.device)
         options = whisper.DecodingOptions()
         result = whisper.decode(self.model, mel, options)
