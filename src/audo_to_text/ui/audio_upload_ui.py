@@ -48,6 +48,18 @@ class AudioUploadTranscribeUI:
     """Handles audio file upload UI and delegates logic to AudioUploadHandler."""
     def __init__(self):
         self.handler = AudioUploadHandler()
+        self.language_map = self.load_language_map()
+
+    @staticmethod
+    def load_language_map():
+        import json
+        from pathlib import Path
+        config_path = Path(__file__).parent.parent / "config/language_map.json"
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
 
     def file_uploader(self):
         return st.file_uploader("Upload audio file (wav/mp3)", type=["wav", "mp3"], accept_multiple_files=False)
@@ -82,10 +94,6 @@ class AudioUploadTranscribeUI:
         file_path = self.handler.write_transcription_to_file(text)
         self.handler.download_button(text, file_path)
 
-    @staticmethod
-    def language_name(lang_code):
-        """Map language code to full language name."""
-        code_map = {
-            "en": "English", "hi": "Hindi", "fr": "French", "de": "German", "es": "Spanish", "it": "Italian", "zh": "Chinese", "ja": "Japanese", "ru": "Russian", "ar": "Arabic", "pt": "Portuguese", "bn": "Bengali", "pa": "Punjabi", "te": "Telugu", "ta": "Tamil", "tr": "Turkish", "ko": "Korean", "ur": "Urdu", "fa": "Persian", "pl": "Polish", "nl": "Dutch", "sv": "Swedish", "no": "Norwegian", "fi": "Finnish", "da": "Danish", "el": "Greek", "he": "Hebrew", "id": "Indonesian", "th": "Thai", "vi": "Vietnamese", "uk": "Ukrainian", "ro": "Romanian", "hu": "Hungarian", "cs": "Czech", "sk": "Slovak", "sl": "Slovenian", "hr": "Croatian", "sr": "Serbian", "bg": "Bulgarian", "lt": "Lithuanian", "lv": "Latvian", "et": "Estonian", "ms": "Malay", "fil": "Filipino", "sw": "Swahili", "zu": "Zulu", "af": "Afrikaans", "ca": "Catalan", "eu": "Basque", "gl": "Galician", "is": "Icelandic", "mt": "Maltese", "sq": "Albanian", "mk": "Macedonian", "az": "Azerbaijani", "ka": "Georgian", "hy": "Armenian", "be": "Belarusian", "kk": "Kazakh", "uz": "Uzbek", "mn": "Mongolian", "ky": "Kyrgyz", "tg": "Tajik", "tk": "Turkmen", "ps": "Pashto", "sd": "Sindhi", "si": "Sinhala", "my": "Burmese", "km": "Khmer", "lo": "Lao", "am": "Amharic", "om": "Oromo", "so": "Somali", "ne": "Nepali", "mr": "Marathi", "gu": "Gujarati", "kn": "Kannada", "ml": "Malayalam", "or": "Odia", "sa": "Sanskrit", "as": "Assamese", "mai": "Maithili", "bh": "Bhojpuri", "ta": "Tamil", "te": "Telugu", "ur": "Urdu"
-        }
-        return code_map.get(lang_code, lang_code)
+    def language_name(self, lang_code):
+        """Map language code to full language name using cached map."""
+        return self.language_map.get(lang_code, lang_code)
