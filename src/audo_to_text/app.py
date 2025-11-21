@@ -1,16 +1,12 @@
-from services.audio_transcriber import AudioFileTranscriber, DEFAULT_AUDIO_PATH, DEFAULT_MODEL_NAME
-from services.model_loader import ModelLoader
+"""Legacy entrypoint forwarding to CLI.
 
+Prefer running the CLI directly:
+    python src/audo_to_text/cli/cli.py --audio path/to/file.wav --model tiny
 
-def main():
-    # Preload model centrally (enables reuse and one-time device init)
-    model = ModelLoader(DEFAULT_MODEL_NAME).load()
-    transcriber = AudioFileTranscriber(audio_path=DEFAULT_AUDIO_PATH, model=model)
-    lang, text = transcriber.transcribe()
-    print(f"Detected language: {lang}")
-    print("Transcription:")
-    print(text)
+This file is kept as a convenience; it invokes the same logic with
+default arguments.
+"""
+from .cli.cli import main  # Adjusted import to package-relative path
 
-
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
