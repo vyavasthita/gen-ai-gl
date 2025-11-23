@@ -44,7 +44,7 @@ def main():
         """, unsafe_allow_html=True)
         image_to_text_main()
     with col_sep:
-        st.markdown("<div style='border-left:2px solid #DDD;height:100vh;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='border-left:2px solid #DDD;height:400px;'></div>", unsafe_allow_html=True)
     with col_audio:
         st.markdown("""
             <div style='text-align: center;'>
@@ -53,6 +53,13 @@ def main():
             </div>
         """, unsafe_allow_html=True)
         audio_to_text_main()
+
+    # Add vertical space and then the learning assistant UI below
+    st.markdown("<div style='margin-top:40px;'></div>", unsafe_allow_html=True)
+    col_la, _, _ = st.columns([1, 0.05, 1])
+    with col_la:
+        from learning_assistant.start import main as learning_assistant_main
+        learning_assistant_main()
 
 
 if __name__ == "__main__":
