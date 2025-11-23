@@ -6,8 +6,8 @@ import tempfile
 from pathlib import Path
 import json
 import streamlit as st
-from audo_to_text.ui.transcription_ui import TranscriptionResultUI
-from audo_to_text.services.audio_transcriber import AudioFileTranscriber
+from audio_to_text.ui.transcription_ui import TranscriptionResultUI
+from audio_to_text.services.audio_transcriber import AudioFileTranscriber
 
 
 class AudioUploadHandler:

@@ -9,8 +9,8 @@ parameters, batch directories, output formats, JSON export, etc.).
 from __future__ import annotations
 import argparse
 from pathlib import Path
-from services.model_loader import ModelLoader
-from services.audio_transcriber import AudioFileTranscriber, DEFAULT_AUDIO_PATH, DEFAULT_MODEL_NAME
+from audio_to_text.services.model_loader import ModelLoader
+from audio_to_text.services.audio_transcriber import AudioFileTranscriber, DEFAULT_AUDIO_PATH, DEFAULT_MODEL_NAME
 
 
 def parse_args() -> argparse.Namespace:
