@@ -22,20 +22,23 @@ class AudioUploadHandler:
         pass
 
     def save_uploaded_file(self, uploaded):
-        """Save uploaded audio file to temp path."""
+        """Save uploaded audio file to /tmp path."""
         if not uploaded:
             return None
+        import os
         suffix = Path(uploaded.name).suffix or ".wav"
-        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp_path = Path("/tmp") / f"upload_{os.getpid()}{suffix}"
+        with open(tmp_path, "wb") as tmp:
             tmp.write(uploaded.read())
-            return Path(tmp.name)
+        return tmp_path
 
     def run_transcription(self, tmp_path):
-        """Run Whisper transcription on saved file."""
+        """Run Whisper transcription on saved file, with debug check."""
+        import os
+        assert os.path.exists(str(tmp_path)), f"Audio file not found: {tmp_path}"
         model = st.session_state["whisper_model"]
         transcriber = AudioFileTranscriber(audio_path=tmp_path, model=model)
         lang, text = transcriber.transcribe()
-
         return lang, text
 
     def persist_last_transcript(self, text: str):
