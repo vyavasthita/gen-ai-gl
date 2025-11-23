@@ -18,11 +18,10 @@ class MicrophoneTranscribeUI:
     """
 
     def __init__(self):
-        # Load models if not already in session
+        # Load speech transcriber if not already in session
         if "speech_transcriber" not in st.session_state:
             st.session_state["speech_transcriber"] = SpeechTranscriber(model_name="tiny")
-        if "whisper_model" not in st.session_state:
-            st.session_state["whisper_model"] = ModelLoader("tiny").load()
+        # Whisper model is now loaded in main_ui.py
         self.transcription_ui = TranscriptionResultUI()
 
     def audio_recorder(self):

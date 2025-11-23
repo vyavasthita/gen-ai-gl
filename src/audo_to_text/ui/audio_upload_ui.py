@@ -5,6 +5,7 @@ import streamlit as st
 from src.audo_to_text.ui.transcription_ui import TranscriptionResultUI
 from src.audo_to_text.services.model_loader import ModelLoader
 from src.audo_to_text.services.audio_transcriber import AudioFileTranscriber
+from src.audo_to_text.utils.file_helper import FileHelper
 
 
 class AudioUploadHandler:
@@ -17,9 +18,8 @@ class AudioUploadHandler:
     - Offers download button
     """
     def __init__(self):
-        # Load Whisper model if not already in session
-        if "whisper_model" not in st.session_state:
-            st.session_state["whisper_model"] = ModelLoader("tiny").load()
+        # Whisper model is now loaded in main_ui.py
+        pass
 
     def save_uploaded_file(self, uploaded):
         """Save uploaded audio file to temp path."""
@@ -43,16 +43,9 @@ class AudioUploadHandler:
         st.session_state["last_upload_transcript"] = text
 
     def write_transcription_to_file(self, text: str):
-        """Write transcript to disk for download."""
-        out_dir = Path("transcriptions")
-        out_dir.mkdir(exist_ok=True)
-        file_path = out_dir / "upload_transcription.txt"
-        file_path.write_text(text, encoding="utf-8")
-        return file_path
-
-    def download_button(self, text: str, file_path: Path):
-        """Show download button for transcript text."""
-        pass
+        """Write transcript to disk for download using FileHelper."""
+        file_helper = st.session_state["file_helper"]
+        return file_helper.write_text_file("upload_transcription.txt", text)
 
 
 class AudioUploadTranscribeUI:
@@ -115,7 +108,12 @@ class AudioUploadTranscribeUI:
         """Persist transcript and show download button."""
         self.handler.persist_last_transcript(text)
         file_path = self.handler.write_transcription_to_file(text)
-        self.handler.download_button(text, file_path)
+        st.download_button(
+            label="Download Transcription",
+            data=text,
+            file_name="upload_transcription.txt",
+            mime="text/plain"
+        )
 
     def language_name(self, lang_code):
         """Map language code to full language name using cached map."""
