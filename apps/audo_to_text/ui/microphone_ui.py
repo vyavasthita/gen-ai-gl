@@ -1,3 +1,7 @@
+
+# microphone_ui.py
+# UI and logic for handling microphone input and transcription in Streamlit app
+
 import tempfile
 from pathlib import Path
 import streamlit as st
@@ -9,9 +13,9 @@ from services.speech_transcriber import SpeechTranscriber
 class MicrophoneTranscribeUI:
     """
     Handles microphone input (single-shot recording and future streaming).
-    - Loads Whisper and speech transcriber models
+    - Loads Whisper and speech transcriber models from session state
     - Records and saves audio clips
-    - Runs transcription
+    - Runs transcription using Whisper
     - Persists and writes transcript
     - Offers download/export options
     """
@@ -20,15 +24,25 @@ class MicrophoneTranscribeUI:
         # Load speech transcriber if not already in session
         if "speech_transcriber" not in st.session_state:
             st.session_state["speech_transcriber"] = SpeechTranscriber(model_name="tiny")
-        # Whisper model is now loaded in main_ui.py
+        # Whisper model is loaded in main.py and stored in session_state
         self.transcription_ui = TranscriptionResultUI()
 
     def audio_recorder(self):
-        """Show microphone audio recorder widget."""
+        """
+        Show microphone audio recorder widget.
+        Returns:
+            Recorded audio file object or None
+        """
         return st.audio_input("Record speech")
 
     def save_clip(self, clip):
-        """Save recorded audio clip to temp path."""
+        """
+        Save recorded audio clip to temp path.
+        Args:
+            clip: Recorded audio file object
+        Returns:
+            Path to saved file or None
+        """
         if not clip:
             return None
         suffix = self.determine_suffix(clip)
@@ -36,7 +50,13 @@ class MicrophoneTranscribeUI:
         return self.write_temp_file(data, suffix)
 
     def determine_suffix(self, clip) -> str:
-        """Infer file suffix from mime type; default wav."""
+        """
+        Infer file suffix from mime type; default to .wav
+        Args:
+            clip: Recorded audio file object
+        Returns:
+            File extension string
+        """
         suffix = ".wav"
         ctype = getattr(clip, "type", None) or ""
         if "mpeg" in ctype:
@@ -46,39 +66,58 @@ class MicrophoneTranscribeUI:
         return suffix
 
     def write_temp_file(self, data: bytes, suffix: str) -> Path:
-        """Write bytes to a temp file and return its Path."""
+        """
+        Write bytes to a temp file and return its Path.
+        Args:
+            data: Audio data bytes
+            suffix: File extension
+        Returns:
+            Path to temp file
+        """
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(data)
             return Path(tmp.name)
 
     def transcribe_clip(self, path: Path):
-        """Run Whisper transcription on saved clip."""
+        """
+        Run Whisper transcription on saved clip.
+        Args:
+            path: Path to audio file
+        Returns:
+            (lang, text): Detected language and transcription text
+        """
         if not path:
             return None, ""
-        
         model = st.session_state["whisper_model"]
         transcriber = AudioFileTranscriber(audio_path=path, model=model)
         lang, text = transcriber.transcribe()
         return lang, text
 
     def display_single_shot(self):
-        """Main display logic for microphone tab."""
+        """
+        Main display logic for microphone tab.
+        Shows recorder, runs transcription, displays results.
+        """
         clip = self.audio_recorder()
         if not clip:
             st.info("Press 'Record speech' to capture audio.")
             return
-        # Place Transcribe button and audio playback in the same column for alignment
-        col = st.columns(1)[0]
-        with col:
-            if self.transcribe_action():
-                self.process_clip(clip)
+        self.process_clip(clip)
 
     def transcribe_action(self) -> bool:
-        """Show transcribe button widget."""
+        """
+        Show transcribe button widget (not used in auto mode).
+        Returns:
+            Button state (True/False)
+        """
         return st.button("Transcribe", key="mic_transcribe_btn")
 
     def process_clip(self, clip):
-        """Handle clip saving, transcription, and render results."""
+        """
+        Handle clip saving, transcription, and render results.
+        Args:
+            clip: Recorded audio file object
+        """
         path = self.save_clip(clip)
         if not path:
             st.error("Failed to save recording.")
@@ -87,21 +126,38 @@ class MicrophoneTranscribeUI:
             lang, text = self.transcribe_clip(path)
             self.render_transcription(lang, text, audio_path=path)
         finally:
+            # Clean up temp file
             if path.exists():
                 path.unlink(missing_ok=True)
 
     def render_transcription(self, lang: str, text: str, audio_path=None):
-        """Show transcription, audio playback, and export buttons."""
+        """
+        Show transcription, audio playback, and export buttons.
+        Args:
+            lang: Detected language code
+            text: Transcription text
+            audio_path: Path to audio file
+        """
         self.persist_last_transcript(text)
         file_path = self.write_transcription_to_file(text)
         self.transcription_ui.render(lang, text, audio_path, transcription_label="Microphone Transcription")
 
     def persist_last_transcript(self, text: str):
-        """Store last transcript in session state."""
+        """
+        Store last transcript in session state for later retrieval.
+        Args:
+            text: Transcription text
+        """
         st.session_state["last_mic_transcript"] = text
 
     def write_transcription_to_file(self, text: str):
-        """Write transcript to disk for download."""
+        """
+        Write transcript to disk for download.
+        Args:
+            text: Transcription text
+        Returns:
+            Path to saved file
+        """
         out_dir = Path("transcriptions")
         out_dir.mkdir(exist_ok=True)
         file_path = out_dir / "microphone_transcription.txt"
@@ -109,6 +165,9 @@ class MicrophoneTranscribeUI:
         return file_path
 
     def display(self):
-        """Entry point for microphone tab UI."""
+        """
+        Entry point for microphone tab UI.
+        Renders subheader and main display logic.
+        """
         st.subheader("Microphone Speech Recognition")
         self.display_single_shot()
