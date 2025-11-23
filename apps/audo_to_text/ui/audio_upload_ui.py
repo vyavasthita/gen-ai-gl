@@ -2,10 +2,10 @@ import tempfile
 from pathlib import Path
 import json
 import streamlit as st
-from src.audo_to_text.ui.transcription_ui import TranscriptionResultUI
-from src.audo_to_text.services.model_loader import ModelLoader
-from src.audo_to_text.services.audio_transcriber import AudioFileTranscriber
-from src.audo_to_text.utils.file_helper import FileHelper
+from ui.transcription_ui import TranscriptionResultUI
+from services.model_loader import ModelLoader
+from services.audio_transcriber import AudioFileTranscriber
+from utils.file_helper import FileHelper
 
 
 class AudioUploadHandler:
@@ -43,9 +43,13 @@ class AudioUploadHandler:
         st.session_state["last_upload_transcript"] = text
 
     def write_transcription_to_file(self, text: str):
-        """Write transcript to disk for download using FileHelper."""
+        """Write transcript to disk for download using FileHelper in local transcriptions dir."""
         file_helper = st.session_state["file_helper"]
-        return file_helper.write_text_file("upload_transcription.txt", text)
+        transcriptions_dir = Path(__file__).parent.parent / "transcriptions"
+        transcriptions_dir.mkdir(exist_ok=True)
+        file_path = transcriptions_dir / "upload_transcription.txt"
+        file_path.write_text(text, encoding="utf-8")
+        return file_path
 
 
 class AudioUploadTranscribeUI:

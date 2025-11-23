@@ -3,12 +3,12 @@ Main UI entry point for audio/speech transcription app.
 Provides tabbed interface for file upload and microphone input.
 """
 import streamlit as st
-from src.audo_to_text.ui.audio_upload_ui import AudioUploadTranscribeUI
-from src.audo_to_text.ui.microphone_ui import MicrophoneTranscribeUI
-from src.audo_to_text.utils.file_helper import FileHelper
+from ui.audio_upload_ui import AudioUploadTranscribeUI
+from ui.microphone_ui import MicrophoneTranscribeUI
+from utils.file_helper import FileHelper
+
 
 # Setup Streamlit page configuration and header
-
 def setup_page():
     """Configure Streamlit page and display main header/caption."""
     st.set_page_config(page_title="Transcribe", layout="centered")
@@ -22,7 +22,7 @@ def setup_file_helper():
 
 def setup_whisper_model():
     """Initialize Whisper model once at app startup."""
-    from src.audo_to_text.services.model_loader import ModelLoader
+    from services.model_loader import ModelLoader
     if "whisper_model" not in st.session_state:
         st.session_state["whisper_model"] = ModelLoader("tiny").load()
 

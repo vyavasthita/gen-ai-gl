@@ -2,7 +2,7 @@ from pathlib import Path
 import whisper
 from typing import Any
 
-DEFAULT_AUDIO_PATH = Path("./src/audo_to_text/sample_files/first.wav")
+DEFAULT_AUDIO_PATH = Path("./apps/audo_to_text/sample_files/first.wav")
 DEFAULT_MODEL_NAME = "tiny"
 
 

@@ -4,7 +4,7 @@ Used by both audio upload and microphone transcription UIs.
 """
 import streamlit as st
 # File: transcription_ui.py
-from  src.audo_to_text.ui.export_ui import export_dropdown
+from  ui.export_ui import export_dropdown
 
 
 class TranscriptionResultUI:

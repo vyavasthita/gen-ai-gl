@@ -61,7 +61,7 @@ class ExportUI:
         pdf.set_font("Arial", size=12)
         for line in self.text.splitlines():
             pdf.cell(200, 10, txt=line, ln=1)
-        return pdf.output(dest="S").encode("latin-1")
+        return pdf.output(dest="S").encode("utf-8")
 
     def transcription_to_srt(self) -> str:
         """Convert plain text transcription to minimal SRT format."""

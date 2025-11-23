@@ -1,21 +1,18 @@
 [project]
-name = "gen-ai-gl"
+name = "audo-to-text"
 version = "0.1.0"
-description = "Gen AI Practice"
+description = "Audio to Text convertor"
 authors = [
     {name = "diliplakshya@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12,<3.15"
+requires-python = "3.12.12"
 dependencies = [
-    "transformers (>=4.57.1,<5.0.0)",
-    "torch (>=2.9.0,<3.0.0)",
-    "openai (>=2.8.1,<3.0.0)",
     "streamlit (>=1.51.0,<2.0.0)",
-    "soundfile (>=0.13.1,<0.14.0)",
     "openai-whisper (>=20250625,<20250626)",
     "fpdf (>=1.7.2,<2.0.0)"
 ]
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

@@ -1,7 +1,7 @@
 """Command-line interface for audio transcription.
 
 Usage:
-	python src/audo_to_text/cli/cli.py --audio path/to/file.wav --model tiny
+	python apps/audo_to_text/cli/cli.py --audio path/to/file.wav --model tiny
 
 In future this can be extended with options (device selection, decoding
 parameters, batch directories, output formats, JSON export, etc.).
@@ -10,8 +10,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from src.audo_to_text.services.model_loader import ModelLoader
-from src.audo_to_text.services.audio_transcriber import AudioFileTranscriber, DEFAULT_AUDIO_PATH, DEFAULT_MODEL_NAME
+from apps.audo_to_text.services.model_loader import ModelLoader
+from apps.audo_to_text.services.audio_transcriber import AudioFileTranscriber, DEFAULT_AUDIO_PATH, DEFAULT_MODEL_NAME
 
 
 def parse_args() -> argparse.Namespace:
