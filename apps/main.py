@@ -9,8 +9,11 @@ def setup_main_page():
     """
     Configure Streamlit main page and display main title.
     """
-    st.set_page_config(page_title="Gen AI Apps Suite", layout="centered")
-    st.title("Gen AI Apps Suite")
+    st.set_page_config(page_title="Gen AI Apps Suite", layout="wide")
+    st.markdown("""
+        <div style='margin-top:-40px;'></div>
+        <h1 style='text-align: center; margin-bottom: 0px;'>Gen AI Apps Suite</h1>
+    """, unsafe_allow_html=True)
 
 def setup_file_helper():
     """
@@ -30,13 +33,16 @@ def init():
 def main():
     init()
 
-    # Tabbed UI for multiple apps
-    tab_audio, tab_image = st.tabs(["Audio to Text", "Image to Text"])
-    
-    with tab_audio:
-        audio_to_text_main()
-    with tab_image:
+    # Horizontal two-column layout for both apps with a vertical separator
+    col_image, col_sep, col_audio = st.columns([1, 0.05, 1])
+    with col_image:
+        st.subheader("Image to Text")
         image_to_text_main()
+    with col_sep:
+        st.markdown("<div style='border-left:2px solid #DDD;height:100vh;'></div>", unsafe_allow_html=True)
+    with col_audio:
+        st.subheader("Audio to Text")
+        audio_to_text_main()
 
 
 if __name__ == "__main__":
