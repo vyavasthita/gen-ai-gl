@@ -7,9 +7,9 @@ Provides tabbed interface for file upload and microphone input.
 
 import streamlit as st
 import toml
-from ui.audio_upload_ui import AudioUploadTranscribeUI
-from ui.microphone_ui import MicrophoneTranscribeUI
-from utils.file_helper import FileHelper
+from audo_to_text.ui.audio_upload_ui import AudioUploadTranscribeUI
+from audo_to_text.ui.microphone_ui import MicrophoneTranscribeUI
+from audo_to_text.utils.file_helper import FileHelper
 
 # ---------- Setup Functions ----------
 def setup_page():
@@ -46,7 +46,7 @@ def setup_whisper_model():
     """
     Initialize Whisper model once at app startup and store in session_state.
     """
-    from services.model_loader import ModelLoader
+    from audo_to_text.services.model_loader import ModelLoader
     if "whisper_model" not in st.session_state:
         st.session_state["whisper_model"] = ModelLoader("tiny").load()
 

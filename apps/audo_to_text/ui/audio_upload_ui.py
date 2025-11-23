@@ -6,8 +6,8 @@ import tempfile
 from pathlib import Path
 import json
 import streamlit as st
-from ui.transcription_ui import TranscriptionResultUI
-from services.audio_transcriber import AudioFileTranscriber
+from audo_to_text.ui.transcription_ui import TranscriptionResultUI
+from audo_to_text.services.audio_transcriber import AudioFileTranscriber
 
 
 class AudioUploadHandler:
@@ -20,7 +20,7 @@ class AudioUploadHandler:
     - Offers download button
     """
     def __init__(self):
-        # Whisper model is loaded in main.py and stored in session_state
+        # Whisper model is loaded in apps/main.py and stored in session_state
         pass
 
     def save_uploaded_file(self, uploaded):

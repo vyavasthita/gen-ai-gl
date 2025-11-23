@@ -6,7 +6,7 @@ Used by both audio upload and microphone transcription UIs.
 """
 
 import streamlit as st
-from ui.export_ui import export_pdf_button
+from audo_to_text.ui.export_ui import export_pdf_button
 
 
 class TranscriptionResultUI:

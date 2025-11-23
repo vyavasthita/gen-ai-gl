@@ -5,9 +5,9 @@
 import tempfile
 from pathlib import Path
 import streamlit as st
-from ui.transcription_ui import TranscriptionResultUI
-from services.audio_transcriber import AudioFileTranscriber
-from services.speech_transcriber import SpeechTranscriber
+from audo_to_text.ui.transcription_ui import TranscriptionResultUI
+from audo_to_text.services.audio_transcriber import AudioFileTranscriber
+from audo_to_text.services.speech_transcriber import SpeechTranscriber
 
 
 class MicrophoneTranscribeUI:
@@ -24,7 +24,7 @@ class MicrophoneTranscribeUI:
         # Load speech transcriber if not already in session
         if "speech_transcriber" not in st.session_state:
             st.session_state["speech_transcriber"] = SpeechTranscriber(model_name="tiny")
-        # Whisper model is loaded in main.py and stored in session_state
+        # Whisper model is loaded in apps/main.py and stored in session_state
         self.transcription_ui = TranscriptionResultUI()
 
     def audio_recorder(self):
