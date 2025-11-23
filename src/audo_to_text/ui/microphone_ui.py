@@ -1,7 +1,7 @@
 import tempfile
 from pathlib import Path
 import streamlit as st
-from src.audo_to_text.ui.common_ui import TranscriptionResultUI
+from src.audo_to_text.ui.transcription_ui import TranscriptionResultUI
 from src.audo_to_text.services.model_loader import ModelLoader
 from src.audo_to_text.services.audio_transcriber import AudioFileTranscriber
 from src.audo_to_text.services.speech_transcriber import SpeechTranscriber
