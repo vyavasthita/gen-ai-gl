@@ -2,7 +2,6 @@ import tempfile
 from pathlib import Path
 import streamlit as st
 from ui.transcription_ui import TranscriptionResultUI
-from services.model_loader import ModelLoader
 from services.audio_transcriber import AudioFileTranscriber
 from services.speech_transcriber import SpeechTranscriber
 

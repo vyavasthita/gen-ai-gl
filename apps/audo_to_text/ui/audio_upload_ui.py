@@ -3,9 +3,7 @@ from pathlib import Path
 import json
 import streamlit as st
 from ui.transcription_ui import TranscriptionResultUI
-from services.model_loader import ModelLoader
 from services.audio_transcriber import AudioFileTranscriber
-from utils.file_helper import FileHelper
 
 
 class AudioUploadHandler:
