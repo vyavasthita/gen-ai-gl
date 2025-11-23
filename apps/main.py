@@ -36,12 +36,22 @@ def main():
     # Horizontal two-column layout for both apps with a vertical separator
     col_image, col_sep, col_audio = st.columns([1, 0.05, 1])
     with col_image:
-        st.subheader("Image to Text")
+        st.markdown("""
+            <div style='text-align: center;'>
+                <h3 style='display: inline-block; margin-bottom: 0px;'>Image to Text</h3><br>
+                <hr style='border:1px solid #DDD; width: 180px; margin: 8px auto 20px auto;'>
+            </div>
+        """, unsafe_allow_html=True)
         image_to_text_main()
     with col_sep:
         st.markdown("<div style='border-left:2px solid #DDD;height:100vh;'></div>", unsafe_allow_html=True)
     with col_audio:
-        st.subheader("Audio to Text")
+        st.markdown("""
+            <div style='text-align: center;'>
+                <h3 style='display: inline-block; margin-bottom: 0px;'>Audio to Text</h3><br>
+                <hr style='border:1px solid #DDD; width: 180px; margin: 8px auto 20px auto;'>
+            </div>
+        """, unsafe_allow_html=True)
         audio_to_text_main()
 
 

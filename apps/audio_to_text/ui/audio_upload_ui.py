@@ -66,18 +66,16 @@ class AudioUploadHandler:
 
     def write_transcription_to_file(self, text: str):
         """
-        Write transcript to disk for download using FileHelper in local transcriptions dir.
+        Write transcript using FileHelper in /tmp/resources/audio_to_text/transcriptions/upload_transcription.txt.
         Args:
             text: Transcription text
         Returns:
-            Path to saved file
+            Path to saved file (None, handled by FileHelper)
         """
-        file_helper = st.session_state["file_helper"]
-        transcriptions_dir = Path(__file__).parent.parent / "transcriptions"
-        transcriptions_dir.mkdir(exist_ok=True)
-        file_path = transcriptions_dir / "upload_transcription.txt"
-        file_path.write_text(text, encoding="utf-8")
-        return file_path
+        file_helper = st.session_state.get("file_helper")
+        
+        if file_helper:
+            file_helper.write_text_file("transcriptions", "upload_transcription.txt", text)
 
 
 class AudioUploadTranscribeUI:

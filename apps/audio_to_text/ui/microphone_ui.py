@@ -139,7 +139,10 @@ class MicrophoneTranscribeUI:
             audio_path: Path to audio file
         """
         self.persist_last_transcript(text)
-        file_path = self.write_transcription_to_file(text)
+        # Use FileHelper from session state to save transcription
+        file_helper = st.session_state.get("image_file_helper")
+        if file_helper:
+            file_helper.write_text_file("transcriptions", "microphone_transcription.txt", text)
         self.transcription_ui.render(lang, text, audio_path, transcription_label="Microphone Transcription")
 
     def persist_last_transcript(self, text: str):
@@ -150,19 +153,7 @@ class MicrophoneTranscribeUI:
         """
         st.session_state["last_mic_transcript"] = text
 
-    def write_transcription_to_file(self, text: str):
-        """
-        Write transcript to disk for download.
-        Args:
-            text: Transcription text
-        Returns:
-            Path to saved file
-        """
-        out_dir = Path("transcriptions")
-        out_dir.mkdir(exist_ok=True)
-        file_path = out_dir / "microphone_transcription.txt"
-        file_path.write_text(text, encoding="utf-8")
-        return file_path
+    # Removed manual file writing; handled by FileHelper
 
     def display(self):
         """
